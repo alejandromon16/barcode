@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "barcode",
+    "slug": "barcode",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "barcode",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.alm1.barcode"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.alm1.barcode"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-font",
+        {
+          "GT Walsheim Pro-regular": ["/src/assets/fonts/GTWalsheimPro-Regular.ttf"]
+        }
+      ]
+    ]
+  }
+}
