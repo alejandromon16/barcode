@@ -7,6 +7,7 @@
     "scheme": "barcode",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "owner": "alm1",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -34,9 +35,25 @@
       [
         "expo-font",
         {
-          "GT Walsheim Pro-regular": ["/src/assets/fonts/GTWalsheimPro-Regular.ttf"]
+          "GT Walsheim Pro-regular": [
+            "/src/assets/fonts/GTWalsheimPro-Regular.ttf"
+          ]
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b929760b-8add-4114-8398-01ed7b5c9882"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b929760b-8add-4114-8398-01ed7b5c9882"
+    }
   }
 }
