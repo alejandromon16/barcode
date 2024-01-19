@@ -9,6 +9,7 @@ import {
   Button,
   ButtonText,
   ButtonIcon,
+  ButtonSpinner,
   FormControl,
   FormControlError,
   FormControlErrorIcon,
@@ -107,7 +108,7 @@ export default function index() {
                   paddingHorizontal="$10"
                 >
                   <Box>
-                    <Text fontFamily={'GT-walsheim'} fontWeight={"$bold"} color="$black" fontSize={"$2xl"}>
+                    <Text paddingVertical={'$1'} fontWeight={"$bold"} color="$black" fontSize={"$2xl"}>
                       Inicia Sesion con tu Cuenta
                     </Text>
                   </Box>
@@ -142,37 +143,6 @@ export default function index() {
                           </FormControlError>
                         </FormControl>
                     </Box>
-
-                    {/* <Box h="auto" w="$full">
-                      <FormControl
-                          size="md"
-                          isDisabled={false}
-                          isInvalid={false}
-                          isReadOnly={false}
-                          isRequired={false}
-                        >
-                          <FormControlLabel mb="$1">
-                            <FormControlLabelText>Contraseña</FormControlLabelText>
-                          </FormControlLabel>
-                          <Input 
-                          variant={'underlined'}
-                          >
-                            <InputField 
-                              onFocus={() => console.log('is focus')}
-                              onBlur={() => console.log('is not focus')}
-                              type="text" 
-                              placeholder="***************"
-                              
-                            />
-                          </Input>
-                          <FormControlError>
-                            <FormControlErrorIcon as={AlertCircleIcon} />
-                            <FormControlErrorText>
-                              At least 6 characters are required.
-                            </FormControlErrorText>
-                          </FormControlError>
-                        </FormControl>
-                    </Box> */}
                     
                     <Box 
                       h="auto" 
@@ -180,7 +150,7 @@ export default function index() {
                     >
                       <FormControl size="md" isDisabled={false} isInvalid={false} isReadOnly={false} isRequired={false}>
                         <FormControlLabel mb='$1'>
-                          <FormControlLabelText>Password</FormControlLabelText>
+                          <FormControlLabelText>Contraseña</FormControlLabelText>
                         </FormControlLabel>
                         <Input
                           variant='underlined'
@@ -190,8 +160,7 @@ export default function index() {
                             onFocus={() => setInputStates((prevS) => ({...prevS, passwordInputFocus: true}))}
                             onBlur={() => setInputStates((prevS) => ({...prevS,passwordInputFocus: false}))}
                             type={showPassword ? 'text' : 'password'}
-                            defaultValue="12345"
-                            placeholder="password"
+                            placeholder="*************"
                           />
                           <Button 
                             variant='link'
@@ -217,10 +186,11 @@ export default function index() {
                       size="md"
                       variant="solid"
                       action="primary"
-                      isDisabled={false}
+                      isDisabled={true}
                       isFocusVisible={false}
                     >
-                      <ButtonText color={"$black"}>Iniciar Sesion</ButtonText>
+                      <ButtonSpinner  mr="$1" />
+                      {/* <ButtonText color={"$black"}>Iniciar Sesion</ButtonText> */}
                     </Button>
                   </Box>
                 </VStack>
