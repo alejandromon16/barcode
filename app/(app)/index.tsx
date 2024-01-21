@@ -16,7 +16,7 @@ const StackScreenConfig = () => {
   return (
     <Stack.Screen
       options={{
-        headerShown: true,
+        headerShown:true,
         title: " Escaner",
       }}
     />

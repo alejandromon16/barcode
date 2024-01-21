@@ -1,16 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
+import { Camera, useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
 
 const App = () => {
   const device = useCameraDevice('back');
   const { hasPermission, requestPermission } = useCameraPermission();
-  const codeScanner = useCodeScanner({
-    codeTypes: ['qr', 'ean-13'],
-    onCodeScanned: (codes) => {
-      console.log(`Scanned ${codes.length} codes!`)
-    }
-  })
 
   if (device == null) {
     return <NoCameraDeviceError />;
@@ -25,7 +19,6 @@ const App = () => {
   return (
     <Camera
       style={StyleSheet.absoluteFill}
-      codeScanner={codeScanner}
       device={device}
       isActive={true}
       // Add other camera props as needed
