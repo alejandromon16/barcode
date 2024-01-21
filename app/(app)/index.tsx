@@ -10,7 +10,7 @@ import {
   useToast,
 } from "@gluestack-ui/themed";
 import { useAuth } from "../../src/contexts/auth-context";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 
 const StackScreenConfig = () => {
   return (
@@ -66,23 +66,7 @@ const index = () => {
         <Box>
           <Button
             onPress={() => {
-            //   console.log("loggin out");
-            //   toast.show({
-            //     placement: "bottom",
-            //     render: ({ id }) => {
-            //       const toastId = "toast-" + id;
-            //       return (
-            //         <Toast nativeID={toastId} action="success" variant="accent">
-            //           <VStack space="xs">
-            //             <ToastDescription>
-            //               Sesión cerrada correctamente.
-            //             </ToastDescription>
-            //           </VStack>
-            //         </Toast>
-            //       );
-            //     },
-            //   });
-            //   logout();
+              router.push('/scanning')
             }}
             width={"$full"}
             size="md"

@@ -23,6 +23,7 @@ export const Text = createStyle({
     bold: {
       true: {
         fontWeight: '$bold',
+        fontFamily: 'GT Walsheim Pro-bold'
       },
     },
     underline: {

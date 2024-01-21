@@ -1,0 +1,17 @@
+   //   console.log("loggin out");
+            //   toast.show({
+            //     placement: "bottom",
+            //     render: ({ id }) => {
+            //       const toastId = "toast-" + id;
+            //       return (
+            //         <Toast nativeID={toastId} action="success" variant="accent">
+            //           <VStack space="xs">
+            //             <ToastDescription>
+            //               Sesión cerrada correctamente.
+            //             </ToastDescription>
+            //           </VStack>
+            //         </Toast>
+            //       );
+            //     },
+            //   });
+            //   logout();
