@@ -39,6 +39,13 @@
             "/src/assets/fonts/GTWalsheimPro-Regular.ttf"
           ]
         }
+      ],
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) Necesita acceso a la Camara."
+
+        }
       ]
     ],
     "extra": {

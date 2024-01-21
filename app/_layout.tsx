@@ -1,10 +1,11 @@
-import { GluestackUIProvider, Text, Box} from "@gluestack-ui/themed";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
 import React from "react";
-import { config } from "../src/config/gluestack-ui.config";
-import { Slot, SplashScreen } from "expo-router";
+import { config } from "../src/config/gluestack-ui/gluestack-ui.config";
+import { Slot, SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from 'expo-font';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { AuthProvider } from "../src/contexts/auth-context";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,12 +22,17 @@ export default function RootLayout() {
 
 
   return (
-    <>
-      <StatusBar style="auto" />
-      <GluestackUIProvider config={config}>
-        <Slot />
-      </GluestackUIProvider>
-    </>
+    <AuthProvider>
+          <StatusBar style="auto" />
+          <GluestackUIProvider config={config}>
+            <Stack 
+              initialRouteName="(app)"
+              screenOptions={{
+                headerShown: false,
+              }}
+            />
+          </GluestackUIProvider>
+      </AuthProvider>
   );
 }
 
