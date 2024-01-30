@@ -6,6 +6,8 @@ import { StatusBar } from "expo-status-bar";
 import { useFonts } from 'expo-font';
 import { StyleSheet } from 'react-native';
 import { AuthProvider } from "../src/contexts/auth-context";
+import 'react-native-reanimated';
+import 'react-native-gesture-handler';
 
 SplashScreen.preventAutoHideAsync();
 
