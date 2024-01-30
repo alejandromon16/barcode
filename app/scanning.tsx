@@ -37,7 +37,6 @@ export default function App() {
       <Camera 
         style={styles.camera} 
         type={type}
-        barCodeScannerSettings={BarCodeScanner.Constants.BarCodeType.qr}
         onBarCodeScanned={handleScannedCode}
       >
 
