@@ -12,7 +12,7 @@ const StackScreenConfig = () => {
   return (
     <Stack.Screen
       options={{
-        headerShown: false,
+        headerShown: true,
       }}
     />
   );
@@ -94,87 +94,10 @@ export default function AppLayout() {
   // }, [isAuthenticated]);
 
   return (
-    <Tabs
+    <Tabs 
       screenOptions={{
-        tabBarLabel: " ",
-        headerShown: false,
-        tabBarStyle: {
-          position: "absolute",
-          bottom: 0,
-          height: 90,
-        },
+        headerShown: true
       }}
-    >
-      <Tabs.Screen
-        key="index"
-        name="index"
-        options={{
-          tabBarIcon: () => (
-            <TabButton
-              label="Escaner"
-              focused={activeTab === "INDEX"}
-              tabName="INDEX"
-              icon={
-                <MaterialCommunityIcons
-                  name="qrcode-scan"
-                  size={20}
-                  color={activeTab === "INDEX" ? "black" : "gray"}
-                />
-              }
-              onPress={() => {
-                setActiveTab("INDEX");
-                router.push("/");
-              }}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="tickets"
-        options={{
-          tabBarIcon: () => (
-            <TabButton
-              label="Tickets"
-              focused={activeTab === "TICKETS"}
-              tabName="TICKETS"
-              icon={
-                <Fontisto
-                  name="print"
-                  size={20}
-                  color={activeTab === "TICKETS" ? "black" : "gray"}
-                />
-              }
-              onPress={() => {
-                setActiveTab("TICKETS");
-                navigation.navigate("tickets");
-              }}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          tabBarIcon: () => (
-            <TabButton
-              label="Perfil"
-              focused={activeTab === "PROFILE"}
-              tabName="PROFILE"
-              icon={
-                <FontAwesome5
-                  name="user"
-                  size={20}
-                  color={activeTab === "PROFILE" ? "black" : "gray"}
-                />
-              }
-              onPress={() => {
-                setActiveTab("PROFILE");
-                router.push("/profile");
-              }}
-            />
-          ),
-        }}
-      />
-    </Tabs>
+    />
   );
 }

@@ -1,7 +1,7 @@
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import React from "react";
 import { config } from "../src/config/gluestack-ui/gluestack-ui.config";
-import { Slot, SplashScreen, Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from 'expo-font';
 import { StyleSheet } from 'react-native';
@@ -28,7 +28,7 @@ export default function RootLayout() {
             <Stack 
               initialRouteName="(app)"
               screenOptions={{
-                headerShown: false,
+                headerShown: true,
               }}
             />
           </GluestackUIProvider>
