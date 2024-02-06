@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from 'react-hook-form';
-import { useSpring, animated } from '@react-spring/native';
-import { Keyboard } from 'react-native';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  useForm,
+  Controller,
+  SubmitHandler,
+  FieldValues,
+} from "react-hook-form";
+import { Dimensions, Keyboard, Platform } from "react-native";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   EyeIcon,
   EyeOffIcon,
@@ -21,10 +25,8 @@ import {
   VStack,
 } from "@gluestack-ui/themed";
 import { router, Stack } from "expo-router";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import auth from "../src/config/firebase/firebase";
-import { useAuth } from "../src/contexts/auth-context";
-
+import useAuthStore from "@/stores/auth.store";
+import { MotiView } from "moti";
 
 interface InputStatesType {
   emailInputFocus: boolean;
@@ -52,64 +54,71 @@ const StackScreenConfig = () => {
 };
 
 export default function index() {
-  const { login } = useAuth();
+  const authStore = useAuthStore();
+  const [moveCard, setMoveCard] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const [inputStates, setInputStates] = useState<InputStatesType>({
     emailInputFocus: false,
     passwordInputFocus: false,
   });
-
-  const [{value}, setSpringTarget] = useSpring(() => ({
-    value: 0,
-    config: {
-      duration: 300,
-    }
-  }));
-
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   useEffect(() => {
-    if(inputStates.emailInputFocus || inputStates.passwordInputFocus ){
-      setSpringTarget.start({ value: -280});
+    if (inputStates.emailInputFocus || inputStates.passwordInputFocus) {
+      setMoveCard(true);
     }
 
-    if(!inputStates.emailInputFocus && !inputStates.passwordInputFocus ){
-      setSpringTarget.start({ value: 0});
+    if (!inputStates.emailInputFocus && !inputStates.passwordInputFocus) {
+      setMoveCard(false);
     }
 
-    if(buttonLoading){
+    if (buttonLoading) {
       Keyboard.dismiss();
-      setSpringTarget.start({ value: 0});
+      setMoveCard(false);
     }
-  },[inputStates, buttonLoading])
+  }, [inputStates, buttonLoading]);
 
-  const { handleSubmit, control, watch, formState: { errors, isSubmitting } } = useForm({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (data: FormData) => {
+  const handleLogin = async (data: FormData) => {
     setButtonLoading(true);
     try {
-      const res =  await signInWithEmailAndPassword(auth, data.email, data.password);
-      if(res.user){
-        login()
-        router.push('/(app)')
-      }
-    } catch(e) {
+      const res = await authStore.login(data.email, data.password);
+
+      setButtonLoading(false);
+      router.replace("/(app)");
+    } catch (e) {
       setButtonLoading(false);
       console.error(e);
     }
   };
 
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    handleLogin(data as FormData);
+  };
+
+  const screenHeight = Dimensions.get('window').height;
+
+  const twentyPercentOfScreenHeight = Platform.OS === 'android' ? screenHeight * 0.3 * -1: screenHeight * 0.2 * -1 ;
+
   return (
-        <Box height={"$full"} bgColor={"$green700"}>
+    <Box
+      flex={1}
+      bgColor="$white"
+    >
+        <Box height={"$1/2"} bgColor={"$green700"}>
           <StackScreenConfig />
           <Box
-            marginTop={"$20"}
             display="flex"
             justifyContent="center"
             alignItems="center"
@@ -117,17 +126,21 @@ export default function index() {
             <Image
               size="2xl"
               resizeMode="contain"
-              source={require("../assets/hero.png")}
+              source={require("@/assets/images/hero.png")}
               alt="hero"
             />
           </Box>
 
-
-          <animated.View
-            style={{
-              transform: [
-                {translateY: value}
-              ]
+          <MotiView
+            from={{
+              translateY: 0,
+            }}
+            animate={{
+              translateY: moveCard ? twentyPercentOfScreenHeight : 0,
+            }}
+            transition={{
+              type: "timing",
+              duration: 350,
             }}
           >
             <Box
@@ -139,26 +152,33 @@ export default function index() {
               width={"$full"}
               bgColor={"$white"}
               height={"$full"}
-              style={{transform: `translateY(${value}px)`}}
             >
               <Box display="flex" justifyContent="center" alignItems="center">
                 <VStack
-                  paddingTop={"$20"}
-                  rowGap="-$16"
+                  sx={{
+                    '@base':{
+                      paddingTop: '$10'
+                    }
+                  }}
                   width={"$full"}
                   paddingHorizontal="$10"
+                  display="flex"
                 >
                   <Box>
-                    <Text paddingVertical={'$1'} fontWeight={"$bold"} color="$black" fontSize={"$2xl"}>
+                    <Text
+                      paddingVertical={"$1"}
+                      color="$black"
+                      fontWeight="$bold"
+                    >
                       Inicia Sesion con tu Cuenta
                     </Text>
                   </Box>
                   
-                  <Box
-                    rowGap={'$5'}
-                  >
-                   <Box h="auto" w="$full">
-                   <Controller
+                  <Box height='$5' />
+
+                  <Box>
+                    <Box h="auto" w="$full">
+                      <Controller
                         control={control}
                         name="email"
                         render={({
@@ -166,64 +186,93 @@ export default function index() {
                           fieldState: { error },
                         }) => {
                           return (
-                          <>
-                            <FormControlLabel mb="$1">
-                              <FormControlLabelText>Email</FormControlLabelText>
-                            </FormControlLabel>
-                            <Input variant="underlined" display="flex">
-                               <InputField
-                                onFocus={() => setInputStates((prevS) => ({...prevS, passwordInputFocus: true}))}
-                                onBlur={() => setInputStates((prevS) => ({...prevS,passwordInputFocus: false}))}
-                                type='text'
-                                value={value}
-                                onChangeText={onChange}
-                                placeholder="ejemplo@gmail.com"
-                              />
-                            </Input>
-                          </>
+                            <>
+                              <FormControlLabel mb="$1">
+                                <FormControlLabelText
+                                >Email</FormControlLabelText>
+                              </FormControlLabel>
+                              <Input variant="underlined" display="flex">
+                                <InputField
+                                  onFocus={() =>
+                                    setInputStates((prevS) => ({
+                                      ...prevS,
+                                      passwordInputFocus: true,
+                                    }))
+                                  }
+                                  onBlur={() =>
+                                    setInputStates((prevS) => ({
+                                      ...prevS,
+                                      passwordInputFocus: false,
+                                    }))
+                                  }
+                                  type="text"
+                                  value={value}
+                                  onChangeText={onChange}
+                                  placeholder="ejemplo@gmail.com"
+                                />
+                              </Input>
+                            </>
                           );
                         }}
                       />
                     </Box>
 
+                    <Box height='$10' />
+
+
                     <Box h="auto" w="$full">
-                        <Controller
-                          name="password"
-                          control={control}
-                          render={({
-                            field: { onChange, onBlur, value },
-                            fieldState: { error },
-                          }) => (
-                            <>
-                              <FormControlLabel mb="$1">
-                                <FormControlLabelText>Contraseña</FormControlLabelText>
-                              </FormControlLabel>
-                              <Input variant="underlined" display="flex">
-                                <InputField
-                                  value={value}
-                                  onChangeText={onChange}
-                                  onFocus={() => setInputStates((prevS) => ({...prevS, passwordInputFocus: true}))}
-                                  onBlur={() => setInputStates((prevS) => ({...prevS,passwordInputFocus: false}))}
-                                  type={showPassword ? 'text' : 'password'}
-                                  placeholder="*************"
+                      <Controller
+                        name="password"
+                        control={control}
+                        render={({
+                          field: { onChange, onBlur, value },
+                          fieldState: { error },
+                        }) => (
+                          <>
+                            <FormControlLabel mb="$1">
+                              <FormControlLabelText
+                              >
+                                Contraseña
+                              </FormControlLabelText>
+                            </FormControlLabel>
+                            <Input variant="underlined" display="flex">
+                              <InputField
+                                value={value}
+                                onChangeText={onChange}
+                                onFocus={() =>
+                                  setInputStates((prevS) => ({
+                                    ...prevS,
+                                    passwordInputFocus: true,
+                                  }))
+                                }
+                                onBlur={() =>
+                                  setInputStates((prevS) => ({
+                                    ...prevS,
+                                    passwordInputFocus: false,
+                                  }))
+                                }
+                                type={showPassword ? "text" : "password"}
+                                placeholder="*************"
+                              />
+                              <Button
+                                variant="link"
+                                onPress={() => togglePasswordVisibility()}
+                                size="sm"
+                              >
+                                <ButtonIcon
+                                  size="xl"
+                                  color="$backgroundDark400"
+                                  as={showPassword ? EyeOffIcon : EyeIcon}
                                 />
-                                <Button
-                                  variant="link"
-                                  onPress={() => togglePasswordVisibility()}
-                                  size="sm"
-                                >
-                                  <ButtonIcon
-                                    size="xl"
-                                    color="$backgroundDark400"
-                                    as={showPassword ? EyeOffIcon : EyeIcon}
-                                  />
-                                </Button>
-                              </Input>
-                            </>
-                          )}
-                        />
+                              </Button>
+                            </Input>
+                          </>
+                        )}
+                      />
                     </Box>
                   </Box>
+
+                  <Box height='$5' />
 
                   <Box display="flex">
                     <Button
@@ -235,17 +284,19 @@ export default function index() {
                       isDisabled={buttonLoading ? true : false}
                       isFocusVisible={false}
                     >
-                      { buttonLoading ? (
-                        <ButtonSpinner  mr="$1" />
+                      {buttonLoading ? (
+                        <ButtonSpinner mr="$1" />
                       ) : (
-                        <ButtonText color={"$black"}>Iniciar Sesion</ButtonText>
+                        <ButtonText
+                          color={"$black"}>Iniciar Sesion</ButtonText>
                       )}
                     </Button>
                   </Box>
                 </VStack>
               </Box>
             </Box>
-          </animated.View>
+          </MotiView>
         </Box>
+    </Box>
   );
 }

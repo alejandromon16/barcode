@@ -10,8 +10,8 @@
     "owner": "alm1",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#0D823D"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -37,6 +37,9 @@
         {
           "GT Walsheim Pro-regular": [
             "/src/assets/fonts/GTWalsheimPro-Regular.ttf"
+          ],
+          "GT Walsheim Pro-bold": [
+            "/src/assets/fonts/GTWalsheimPro-Bold.ttf"
           ]
         }
       ],

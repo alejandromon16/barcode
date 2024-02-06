@@ -47,6 +47,10 @@ export const Image = createStyle({
         w: '$64',
         h: '$64',
       },
+      '2xxl': {
+        w: '$34',
+        h: '$34',
+      },
       'full': {
         w: '$full',
         h: '$full',

@@ -3,5 +3,13 @@
   "compilerOptions": {
     "strict": false,
     "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@firebase/auth": [
+        "./node_modules/@firebase/auth/dist/index.rn.d.ts",
+        "./node_modules/@firebase/auth/dist/auth-public.d.ts"
+        ]
+    }
   }
 }

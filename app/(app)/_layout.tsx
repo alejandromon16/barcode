@@ -1,103 +1,127 @@
-import { Redirect, router, Slot, Stack, useNavigation } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { Tabs } from "expo-router/tabs";
-import { useEffect, useState } from "react";
-import { animated, useSpring, easings } from "@react-spring/native";
-import { useAuth } from "../../src/contexts/auth-context";
+import { useState } from "react";
 import { MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
-import { Button, ButtonText, ButtonIcon } from "@gluestack-ui/themed";
 import React, { ReactNode } from "react";
-
-const StackScreenConfig = () => {
-  return (
-    <Stack.Screen
-      options={{
-        headerShown: true,
-      }}
-    />
-  );
-};
-
-type TabsType = "INDEX" | "PROFILE" | "TICKETS";
-
-interface TabButtonProps {
-  onPress: () => void;
-  icon: ReactNode;
-  focused: boolean;
-  tabName: TabsType;
-  label: string;
-}
-
-const AnimatedButton = animated(Button);
-const AnimatedButtonText = animated(ButtonText);
-
-const TabButton: React.FC<TabButtonProps> = ({
-  onPress,
-  icon,
-  focused,
-  tabName,
-  label,
-}) => {
-  const springProps = useSpring({
-    backgroundColor: focused ? "#14CC60" : "#FFFFFF",
-    color: focused ? "#FFFFFF" : "#808080",
-    opacity: focused ? 1 : 0,
-    config: {
-      easing: easings.easeInOutQuart,
-      duration: 200,
-    },
-  });
-
-  return (
-    <AnimatedButton
-      onPress={onPress}
-      style={{
-        backgroundColor: springProps.backgroundColor,
-        padding: 4,
-        height: "auto",
-        borderRadius: 20,
-        display: "flex",
-      }}
-    >
-      {icon}
-      {focused && (
-        <AnimatedButtonText
-          marginLeft={"$2"}
-          fontSize={"$sm"}
-          color={focused ? "$black" : "$gray"}
-          textTransform={"capitalize"}
-          style={{
-            opacity: springProps.opacity,
-          }}
-        >
-          {label}
-        </AnimatedButtonText>
-      )}
-    </AnimatedButton>
-  );
-};
+import { TabButton, TabsType } from "@/components/TabButton";
+import { FontAwesome6 } from "@expo/vector-icons";
+import useAuthStore from "@/stores/auth.store";
+import { Platform } from "react-native";
 
 export default function AppLayout() {
-  const { isAuthenticated } = useAuth();
+  const isAdmin = useAuthStore((state) => state.isAdmin)
+
   const [activeTab, setActiveTab] = useState<TabsType>("INDEX");
+  const authStore = useAuthStore();
 
-  const navigation = useNavigation();
-
-  // if (!isAuthenticated) {
-  //   return <Redirect href="/login" />;
-  // }
-
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     router.replace("/login");
-  //   }
-  // }, [isAuthenticated]);
+  if (!authStore.isAuth) {
+    return <Redirect href="/login" />;
+  }
 
   return (
-    <Tabs 
+    <Tabs
       screenOptions={{
-        headerShown: true
+        tabBarLabel: " ",
+        headerShown: false,
+        tabBarStyle: {
+          position: "absolute",
+          bottom: 0,
+          height: Platform.OS === 'android' ? 70: 100,
+          width: "auto",
+        },
       }}
-    />
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          tabBarInactiveTintColor: '#C7C5C5',
+          tabBarActiveTintColor: '#15BE5A',
+          tabBarLabel: isAdmin ? 'Datos' : 'Escaner',
+          tabBarLabelStyle: {
+            paddingBottom: 5,
+          },
+          tabBarIcon: (props) => {
+            if (isAdmin) {
+              return <MaterialCommunityIcons
+                name="monitor-eye"
+                size={22}
+                color={props.focused ? "#15BE5A" : "gray"}
+              />;
+            } else {
+              return <MaterialCommunityIcons
+                name="qrcode-scan"
+                size={20}
+                color={props.focused ? "#15BE5A" : "gray"} />;
+            }
+          }
+        }}
+      />
+
+      <Tabs.Screen
+        name="employees"
+        options={{
+          tabBarInactiveTintColor: '#C7C5C5',
+          tabBarActiveTintColor: '#15BE5A',
+          tabBarLabel: 'Operarios',
+          tabBarLabelStyle: {
+            paddingBottom: 5,
+          },
+          tabBarIcon: (props) => {
+            return isAdmin ? (<FontAwesome6
+              name="people-group"
+              size={20}
+              color={props.focused ? "#15BE5A" : "gray"}
+            />
+            ): null;
+          },
+          tabBarButton: isAdmin ? undefined : () => { return null; }
+        }}
+      />
+
+      <Tabs.Screen
+        name="tickets"
+        options={{
+          tabBarInactiveTintColor: '#C7C5C5',
+          tabBarActiveTintColor: '#15BE5A',
+          tabBarLabel: 'Tickets',
+          tabBarLabelStyle: {
+            paddingBottom: 5,
+          },
+          tabBarIcon: (props) => {
+            return !isAdmin ? (
+              <Fontisto
+                name="print"
+                size={20}
+                color={props.focused ? "#15BE5A" : "gray"}
+              />
+            ) : null;
+          },
+          tabBarButton: !isAdmin ? undefined : () => { return null; }
+        }}
+      />
+
+
+
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarInactiveTintColor: '#C7C5C5',
+          tabBarActiveTintColor: '#15BE5A',
+          tabBarLabel: 'Perfil',
+          tabBarLabelStyle: {
+            paddingBottom: 5,
+          },
+          tabBarIcon: (props) => {
+            return <FontAwesome5
+              name="user"
+              size={20}
+              color={props.focused ? "#15BE5A" : "gray"}
+            />
+          }
+        }}
+      />
+    </Tabs>
   );
 }

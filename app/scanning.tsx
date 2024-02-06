@@ -1,17 +1,35 @@
 import { Box, ButtonIcon, Text, Button, ButtonText, CloseCircleIcon } from '@gluestack-ui/themed';
 import { Camera, CameraType } from 'expo-camera';
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { MotiView } from 'moti';
 import { Easing } from 'react-native-reanimated';
-import { checkStatusTicket } from '../src/services/CheckStatusTicket';
+import { TicketStatus, checkStatusTicket } from '@/services/CheckStatusTicket';
+import { Stack } from 'expo-router';
+import LottieView from 'lottie-react-native';
+import useAuthStore from '@/stores/auth.store';
+
+const StackScreenConfig = () => {
+  return (
+    <Stack.Screen
+      options={{
+        headerShown: true,
+        headerTitle: 'Escaner',
+        headerBackTitle: 'volver'
+      }}
+    />
+  );
+};
 
 export default function App() {
+  const { userId } = useAuthStore();
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
-  const [qrValue, setQrValue ] = useState<string | null>(null);
+  const [qrValue, setQrValue] = useState<string | null>(null);
+  const [ticketStatus, setTicketStatus] = useState<TicketStatus>("PROCESSING")
   const [scanning, setScanning] = useState<boolean>(false);
+  const animation = useRef(null);
+
 
   if (!permission) {
     // Camera permissions are still loading
@@ -32,33 +50,36 @@ export default function App() {
     setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
   }
 
-  const handleScannedCode = ({data}) => {
-    console.log(data);
-    setQrValue(data);
-    setScanning(true);
-
-    checkTicket(data);
-  
-  }
-
-  const checkTicket = async (qrValue:string) => {
-    if(qrValue){
-      const status = await checkStatusTicket(qrValue);
+  const handleScannedCode = ({ data }) => {
+    if(data != qrValue){
+      setQrValue(data);
+      setTicketStatus('PROCESSING');
+      setScanning(true);
+      checkTicket(data);
     }
   }
 
+  const checkTicket = async (qrValue: string) => {
+    if (qrValue) {
+      const status = await checkStatusTicket(qrValue, userId);
+      setTicketStatus(status);
+    }
+  }
+
+
   return (
     <View style={styles.container}>
-      <Camera 
-        style={styles.camera} 
+      <StackScreenConfig />
+      <Camera
+        style={styles.camera}
         type={type}
-        onBarCodeScanned={scanning ? undefined: handleScannedCode}
+        onBarCodeScanned={handleScannedCode}
         focusDepth={0.2}
       >
         <MotiView
           style={{
-            display:'flex',
-            flex:1
+            display: 'flex',
+            flex: 1
           }}
           from={{
             translateY: 200 // Set the initial position outside the screen
@@ -68,52 +89,166 @@ export default function App() {
           }}
           transition={{
             type: 'timing',
-            duration: 1400, 
+            duration: 1400,
             easing: Easing.ease
           }}
         >
 
-          { scanning && (
+          {scanning && (
+            <Box
+              bottom={0}
+              width={'$full'}
+              bgColor='$white'
+              borderTopLeftRadius={'$2xl'}
+              borderTopRightRadius={'$2xl'}
+              position='absolute'
+              padding={'$5'}
+            >
               <Box
-                bottom={0}
-                width={'$full'}
-                bgColor='$white'
-                borderRadius={'$2xl'}
-                position='absolute'
-                padding={'$5'}
+                display='flex'
+                justifyContent='center'
+                alignItems='center'
+                padding={'$10'}
               >
                 <Box
-                  display='flex'
-                  justifyContent='center'
-                  alignItems='center'
-                  padding={'$10'}
-                  rowGap={'$10'}
+                  alignSelf='flex-end'
                 >
-                  <Box
-                    alignSelf='flex-end'
+                  <Button
+                    size='$2xl'
+                    variant='outline'
+                    borderColor='$white'
+                    onPress={() => setScanning(false)}
                   >
-                      <Button
-                        variant='outline'
-                        borderColor='$white'
-                        onPress={() => setScanning(false)}
-                      >
-                        <ButtonIcon color='$coolGray500'  as={CloseCircleIcon} />
-                      </Button>
-                  </Box>
-
-                  <Box>
-                    <ActivityIndicator />
-                  </Box>
-
-                  <Text
-                    fontWeight='$bold'
-                    fontFamily='GT Walsheim-pro bold'
-                    fontSize='$2xl'
-                    color='$black'
-                  >Procesando...</Text>
-                  <Text>Procesando la validez del Codigo Qr</Text>
+                    <ButtonIcon color='$coolGray500' as={CloseCircleIcon} />
+                  </Button>
                 </Box>
+
+                <Box height='$5' />
+
+                {ticketStatus == "PROCESSING" && (
+
+                  <>
+                    <Box>
+                      <ActivityIndicator />
+
+                    </Box>
+                    <Box height='$5' />
+
+                    <Text
+                      fontWeight='$bold'
+                      fontFamily='GT Walsheim-pro bold'
+                      fontSize='$2xl'
+                      color='$black'
+                    >Procesando...</Text>
+
+                    <Box height='$5' />
+
+                    <Text>Procesando la validez del Codigo Qr</Text>
+
+                  </>
+                )}
+
+                {ticketStatus == "VALID" && (
+
+                  <>
+                    <Box>
+                      <LottieView
+                        autoPlay
+                        loop={false}
+                        ref={animation}
+                        style={{
+                          width: 60,
+                          height: 60,
+                          backgroundColor: '#fffff',
+                        }}
+                        // Find more Lottie files at https://lottiefiles.com/featured
+                        source={require('../src/assets/okay-icon.json')}
+                      />
+                    </Box>
+                    <Box height='$5' />
+
+                    <Text
+                      fontWeight='$bold'
+                      fontFamily='GT Walsheim-pro bold'
+                      fontSize='$2xl'
+                      color='$black'
+                    >Ticket Valido</Text>
+
+
+                  </>
+                )}
+
+                {ticketStatus == "ALREADY_SCAN" && (
+
+                  <>
+                    <Box>
+                      <LottieView
+                        autoPlay
+                        loop={false}
+                        ref={animation}
+                        style={{
+                          width: 60,
+                          height: 60,
+                          backgroundColor: '#fffff',
+                        }}
+                        // Find more Lottie files at https://lottiefiles.com/featured
+                        source={require('../src/assets/warning-icon.json')}
+                      />
+                    </Box>
+                    <Box height='$5' />
+
+                    <Text
+                      fontWeight='$bold'
+                      fontFamily='GT Walsheim-pro bold'
+                      fontSize='$2xl'
+                      color='$black'
+                    >Ticket Invalido</Text>
+
+                    <Box height='$5' />
+
+                    <Text>Ticket ya fue escaneado</Text>
+                  </>
+                )}
+
+                {ticketStatus == "INVALID" && (
+
+                  <>
+                    <Box>
+                      <LottieView
+                        autoPlay
+                        loop={false}
+                        ref={animation}
+                        style={{
+                          width: 60,
+                          height: 60,
+                          backgroundColor: '#fffff',
+                        }}
+                        // Find more Lottie files at https://lottiefiles.com/featured
+                        source={require('../src/assets/error-icon.json')}
+                      />
+                    </Box>
+                    <Box height='$5' />
+
+                    <Text
+                      fontWeight='$bold'
+                      fontFamily='GT Walsheim-pro bold'
+                      fontSize='$2xl'
+                      color='$black'
+
+                    >Ticket Invalido</Text>
+
+                    <Box height='$5' />
+
+                    <Text
+                      alignItems="center"
+                    >El codigo Qr no fue emitido por la Terminal</Text>
+                  </>
+                )}
+
+
+
               </Box>
+            </Box>
           )}
         </MotiView>
       </Camera>
