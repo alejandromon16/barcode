@@ -1,4 +1,5 @@
-import { Box, ButtonIcon, Text, Button, ButtonText, CloseCircleIcon } from '@gluestack-ui/themed';
+
+import { Box, ButtonIcon, ButtonText, Text, Button, ButtonText, CloseCircleIcon, VStack, HStack } from '@gluestack-ui/themed';
 import { Camera, CameraType } from 'expo-camera';
 import React, { useState, useRef, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -39,10 +40,52 @@ export default function App() {
   if (!permission.granted) {
     // Camera permissions are not granted yet
     return (
-      <View style={styles.container}>
-        <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
+      <Box
+      display="flex"
+      justifyContent="flex-start"
+      alignItems="center"
+      height="$full"
+    >
+
+      <VStack
+        display="flex"
+        flex={1}
+        marginHorizontal={"$10"}
+      >
+        <Box
+          marginTop={"$1/3"}
+          display="flex"
+          justifyContent="center"
+        >
+          <VStack>
+  
+            <Box height='$5' />
+
+            <Box>
+              <Text>
+                Necesitamos permiso para utilizar la camara.
+              </Text>
+            </Box>
+          </VStack>
+        </Box>
+
+        <Box height='$5' />
+
+        <Box>
+          <Button
+            onPress={requestPermission}
+            width={"$full"}
+            size="md"
+            variant="solid"
+            action="primary"
+            isDisabled={false}
+            isFocusVisible={false}
+          >
+            <ButtonText color={"$black"}>Permitir Permiso</ButtonText>
+          </Button>
+        </Box>
+      </VStack>
+    </Box>
     );
   }
 
