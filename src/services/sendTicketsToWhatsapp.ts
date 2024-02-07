@@ -1,6 +1,6 @@
 export const sendTicketToWhatsapp = async (imageURL: string, phoneNumber: string) => {
   var data =
-    "token=3pbxjpnq0pvlxr45&to=%2B" + 
+    "token=3pbxjpnq0pvlxr45&to=%2B591" + 
     encodeURIComponent(phoneNumber)
      +"&image=" +
     encodeURIComponent(imageURL) +

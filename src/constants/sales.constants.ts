@@ -1,3 +1,5 @@
+import { TimeRange } from "@/services/getTicketCounts";
+
 function formatDateString(inputDate): string {
   const dateObject = new Date(inputDate);
 
@@ -113,3 +115,42 @@ export const SALESTODAY: LineGraphDataType[] = [
     },
   },
 ];
+
+const formatDateString2 = (inputDate: string): string => {
+  const dateObject = new Date(inputDate);
+  const hours = dateObject.getHours();
+  const minutes = dateObject.getMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const formattedDateString = `${hours % 12 || 12}:${minutes < 10 ? "0" : ""}${minutes} ${ampm}`;
+  return formattedDateString;
+};
+
+const getTicketsPerHour = (timeRange: TimeRange): LineGraphDataType[] => {
+  let data: LineGraphDataType[] = [];
+  switch (timeRange) {
+    case 'TODAY':
+      data = SALESTODAY;
+      break;
+    case 'LAST_WEEK':
+      // Assuming SALESTODAY contains data for the last week
+      data = SALESTODAY.filter(item => item.x >= new Date().getTime() - (7 * 24 * 60 * 60 * 1000));
+      break;
+    case 'LAST_MONTH':
+      // Assuming SALESTODAY contains data for the last month
+      data = SALESTODAY.filter(item => item.x >= new Date().getTime() - (30 * 24 * 60 * 60 * 1000));
+      break;
+    default:
+      throw new Error('Invalid time range');
+  }
+
+  return data.map(item => ({
+    y: item.y,
+    x: item.x,
+    extraData: {
+      formattedValue: item.extraData.formattedValue,
+      formattedAmountPeople: item.extraData.formattedAmountPeople,
+      formattedTime: item.extraData.formattedTime,
+      formattedDate: formatDateString(new Date(item.x).toISOString())
+    }
+  }));
+};

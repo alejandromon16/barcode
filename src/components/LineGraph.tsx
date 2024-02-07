@@ -7,6 +7,7 @@ import { LineGraphDataType, SALESTODAY } from '../constants/sales.constants';
 
 
 interface LineGraphI {
+    data: LineGraphDataType[];
     width: number;
     pointFocus: (dataPoint: any) => void;
     pointUnfocus: () => void;
@@ -14,6 +15,7 @@ interface LineGraphI {
 
 export const LineGraph = ({
     width,
+    data,
     pointFocus,
     pointUnfocus
 }: LineGraphI) => {
@@ -46,7 +48,7 @@ export const LineGraph = ({
           <LineChart
             lines={[
               {
-                data: SALESTODAY,
+                data: data,
                 activePointConfig: {
                   color: "black",
                   showVerticalLine: true,
@@ -71,7 +73,7 @@ export const LineGraph = ({
                         Personas: {point?.extraData?.formattedAmountPeople}
                       </Text>
                       <Text style={{ color: "white" }}>
-                        {point?.extraData?.formattedDate}
+                        {point?.extraData?.formattedTime} {point?.extraData?.formattedDate}
                       </Text>
                     </View>
                   );

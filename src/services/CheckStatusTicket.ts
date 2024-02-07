@@ -5,7 +5,10 @@ import firebase from "../config/firebase/firebase";
 export interface TicketDataI {
   createdAt: Timestamp;
   isAlreadyScan: boolean;
+  scanBy?: string;
   qrValue: string;
+  price?: number;
+  generatedBy?: string;
 }
 
 export type TicketStatus = 'VALID' | 'ALREADY_SCAN' | 'INVALID' | 'PROCESSING'

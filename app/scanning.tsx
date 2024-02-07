@@ -143,7 +143,9 @@ export default function App() {
 
                     <Box height='$5' />
 
-                    <Text>Procesando la validez del Codigo Qr</Text>
+                    <Text
+                      textAlign='center'
+                    >Procesando la validez del Codigo Qr</Text>
 
                   </>
                 )}
@@ -206,7 +208,9 @@ export default function App() {
 
                     <Box height='$5' />
 
-                    <Text>Ticket ya fue escaneado</Text>
+                    <Text
+                      textAlign='center'
+                    >Ticket ya fue escaneado</Text>
                   </>
                 )}
 
@@ -240,7 +244,7 @@ export default function App() {
                     <Box height='$5' />
 
                     <Text
-                      alignItems="center"
+                      textAlign='center'
                     >El codigo Qr no fue emitido por la Terminal</Text>
                   </>
                 )}
