@@ -1,5 +1,5 @@
 
-import { Box, ButtonIcon, ButtonText, Text, Button, ButtonText, CloseCircleIcon, VStack, HStack } from '@gluestack-ui/themed';
+import { Box, ButtonIcon, ButtonText, Text, Button, CloseCircleIcon, VStack, HStack } from '@gluestack-ui/themed';
 import { Camera, CameraType } from 'expo-camera';
 import React, { useState, useRef, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
