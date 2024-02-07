@@ -7,18 +7,9 @@ import { MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
 import { Button, ButtonText, ButtonIcon } from "@gluestack-ui/themed";
 import React, { ReactNode } from "react";
-
-const StackScreenConfig = () => {
-  return (
-    <Stack.Screen
-      options={{
-        headerShown: false,
-      }}
-    />
-  );
-};
-
-type TabsType = "INDEX" | "PROFILE" | "TICKETS";
+import { TabButton, TabsType } from "../../src/components/TabButton";
+import { FontAwesome6 } from '@expo/vector-icons';
+import useAuthStore from "../../src/stores/auth.store";
 
 interface TabButtonProps {
   onPress: () => void;
@@ -28,70 +19,18 @@ interface TabButtonProps {
   label: string;
 }
 
-const AnimatedButton = animated(Button);
-const AnimatedButtonText = animated(ButtonText);
-
-const TabButton: React.FC<TabButtonProps> = ({
-  onPress,
-  icon,
-  focused,
-  tabName,
-  label,
-}) => {
-  const springProps = useSpring({
-    backgroundColor: focused ? "#14CC60" : "#FFFFFF",
-    color: focused ? "#FFFFFF" : "#808080",
-    opacity: focused ? 1 : 0,
-    config: {
-      easing: easings.easeInOutQuart,
-      duration: 200,
-    },
-  });
-
-  return (
-    <AnimatedButton
-      onPress={onPress}
-      style={{
-        backgroundColor: springProps.backgroundColor,
-        padding: 4,
-        height: "auto",
-        borderRadius: 20,
-        display: "flex",
-      }}
-    >
-      {icon}
-      {focused && (
-        <AnimatedButtonText
-          marginLeft={"$2"}
-          fontSize={"$sm"}
-          color={focused ? "$black" : "$gray"}
-          textTransform={"capitalize"}
-          style={{
-            opacity: springProps.opacity,
-          }}
-        >
-          {label}
-        </AnimatedButtonText>
-      )}
-    </AnimatedButton>
-  );
-};
+interface renderTabButtonI {
+  isAdmin: boolean;
+}
 
 export default function AppLayout() {
-  const { isAuthenticated } = useAuth();
+  const isAdmin = false;
   const [activeTab, setActiveTab] = useState<TabsType>("INDEX");
+  const authStore = useAuthStore();
 
-  const navigation = useNavigation();
-
-  // if (!isAuthenticated) {
-  //   return <Redirect href="/login" />;
-  // }
-
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     router.replace("/login");
-  //   }
-  // }, [isAuthenticated]);
+  if(!authStore.isAuth){
+    return <Redirect href='/login' />
+  }
 
   return (
     <Tabs
@@ -102,6 +41,7 @@ export default function AppLayout() {
           position: "absolute",
           bottom: 0,
           height: 90,
+          width: "auto",
         },
       }}
     >
@@ -109,53 +49,127 @@ export default function AppLayout() {
         key="index"
         name="index"
         options={{
-          tabBarIcon: () => (
-            <TabButton
-              label="Escaner"
-              focused={activeTab === "INDEX"}
-              tabName="INDEX"
-              icon={
-                <MaterialCommunityIcons
-                  name="qrcode-scan"
-                  size={20}
-                  color={activeTab === "INDEX" ? "black" : "gray"}
+          tabBarButton: () => {
+            if (!isAdmin) {
+              return (
+                <TabButton
+                  label="Escaner"
+                  focused={activeTab === "INDEX"}
+                  tabName="INDEX"
+                  icon={
+                    <MaterialCommunityIcons
+                      name="qrcode-scan"
+                      size={22}
+                      color={activeTab === "INDEX" ? "black" : "gray"}
+                    />
+                  }
+                  onPress={() => {
+                    setActiveTab("INDEX");
+                    router.push("/");
+                  }}
                 />
-              }
-              onPress={() => {
-                setActiveTab("INDEX");
-                router.push("/");
-              }}
-            />
-          ),
+              );
+            } else {
+              return (
+                <TabButton
+                  label="Datos"
+                  focused={activeTab === "INDEX"}
+                  tabName="INDEX"
+                  icon={
+                    <MaterialCommunityIcons
+                      name="monitor-eye"
+                      size={22}
+                      color={activeTab === "INDEX" ? "black" : "gray"}
+                    />
+                  }
+                  onPress={() => {
+                    setActiveTab("INDEX");
+                    router.push("/");
+                  }}
+                />
+              );
+            }
+          },
         }}
       />
+
       <Tabs.Screen
+        key="tickets"
         name="tickets"
         options={{
-          tabBarIcon: () => (
-            <TabButton
-              label="Tickets"
-              focused={activeTab === "TICKETS"}
-              tabName="TICKETS"
-              icon={
-                <Fontisto
-                  name="print"
-                  size={20}
-                  color={activeTab === "TICKETS" ? "black" : "gray"}
+          tabBarButton: () => {
+            if (!isAdmin) {
+              return (
+                <TabButton
+                  label="Escaner"
+                  focused={activeTab === "TICKETS"}
+                  tabName="TICKETS"
+                  icon={
+                    <FontAwesome5
+                      name="user"
+                      size={22}
+                      color={activeTab === "TICKETS" ? "black" : "gray"}
+                    />
+                  }
+                  onPress={() => {
+                    setActiveTab("TICKETS");
+                    router.push("/tickets");
+                  }}
                 />
-              }
-              onPress={() => {
-                setActiveTab("TICKETS");
-                navigation.navigate("tickets");
-              }}
-            />
-          ),
+              );
+            } else {
+              return null;
+            }
+          },
         }}
       />
+
       <Tabs.Screen
+        key="employees"
+        name="employees"
+        options={{
+          tabBarButton: () => {
+            if (isAdmin) {
+              return (
+                <TabButton
+                  label="Operarios"
+                  focused={activeTab === "EMPLOYEES"}
+                  tabName="EMPLOYEES"
+                  icon={
+                    <FontAwesome6 
+                      name="people-group" 
+                      size={24} 
+                      color={activeTab === "EMPLOYEES" ? "black" : "gray"}
+                    />
+                  }
+                  onPress={() => {
+                    setActiveTab("EMPLOYEES");
+                    router.push("/employees");
+                  }}
+                />
+              );
+            } else {
+              return null;
+            }
+          },
+        }}
+      />
+
+      {/* <Tabs.Screen
+        key="scanning"
+        name="scannig"
+        options={{
+          tabBarButton: () => {
+            return null;
+          },
+        }}
+      /> */}
+
+      <Tabs.Screen
+        key="profile"
         name="profile"
         options={{
-          tabBarIcon: () => (
+          tabBarButton: () => (
             <TabButton
               label="Perfil"
               focused={activeTab === "PROFILE"}
@@ -163,7 +177,7 @@ export default function AppLayout() {
               icon={
                 <FontAwesome5
                   name="user"
-                  size={20}
+                  size={22}
                   color={activeTab === "PROFILE" ? "black" : "gray"}
                 />
               }

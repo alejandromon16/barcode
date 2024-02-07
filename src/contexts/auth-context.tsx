@@ -1,9 +1,11 @@
+import { signOut } from 'firebase/auth';
 import React, { createContext, useContext, useState } from 'react';
+import firebase from '../config/firebase/firebase';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   login: () => void;
-  logout: () => void;
+  logout: () => void; // Ensure that logout returns a Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,7 +20,6 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
 
   const login = () => {
     setIsAuthenticated(true);

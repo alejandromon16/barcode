@@ -21,9 +21,7 @@ import {
   VStack,
 } from "@gluestack-ui/themed";
 import { router, Stack } from "expo-router";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import auth from "../src/config/firebase/firebase";
-import { useAuth } from "../src/contexts/auth-context";
+import useAuthStore from "../src/stores/auth.store";
 
 
 interface InputStatesType {
@@ -52,7 +50,7 @@ const StackScreenConfig = () => {
 };
 
 export default function index() {
-  const { login } = useAuth();
+  const authStore = useAuthStore();
   const [inputStates, setInputStates] = useState<InputStatesType>({
     emailInputFocus: false,
     passwordInputFocus: false,
@@ -94,11 +92,13 @@ export default function index() {
   const onSubmit = async (data: FormData) => {
     setButtonLoading(true);
     try {
-      const res =  await signInWithEmailAndPassword(auth, data.email, data.password);
-      if(res.user){
-        login()
-        router.push('/(app)')
-      }
+      const res = await authStore.login({
+        email: data.email,
+        password: data.password
+      });
+
+      setButtonLoading(false);
+      router.replace('/(app)');
     } catch(e) {
       setButtonLoading(false);
       console.error(e);

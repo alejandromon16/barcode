@@ -445,7 +445,9 @@ export const gluestackUIConfig = createConfig({
       '16': 64,
       '20': 80,
       '24': 96,
+      '30': 100,
       '32': 128,
+      '34': 140,
       '40': 160,
       '48': 192,
       '56': 224,
@@ -634,12 +636,12 @@ export const gluestackUIConfig = createConfig({
       },
       softShadow: {
         '1': {
-          shadowColor: '$backgroundLight900',
+          shadowColor: '$backgroundLight300',
           shadowOffset: {
             width: 0,
             height: 0,
           },
-          shadowRadius: 10,
+          shadowRadius: 5,
           shadowOpacity: 0.1,
           _android: {
             shadowColor: '$backgroundLight500',
