@@ -1,4 +1,4 @@
-import { query, collection, where, getDocs } from 'firebase/firestore';
+import { query, collection, where, getDocs, Timestamp } from 'firebase/firestore';
 import firebase from '../config/firebase/firebase';
 
 export type TimeRange = 'TODAY' | 'LAST_WEEK' | 'LAST_MONTH';
@@ -12,12 +12,12 @@ export const getTicketCounts = async (timeRange: TimeRange): Promise<TicketCount
   try {
     const ticketsRef = collection(firebase.db, 'tickets');
     const currentDate = new Date();
-
     let startDate: Date;
 
     switch (timeRange) {
       case 'TODAY':
-        startDate = currentDate;
+        startDate = new Date(currentDate); // Set startDate to the current date in UTC-4 timezone
+        startDate.setHours(0,0,0,0); // Set time to 00:00:00.000
         break;
       case 'LAST_WEEK':
         startDate = new Date(currentDate);
@@ -31,14 +31,20 @@ export const getTicketCounts = async (timeRange: TimeRange): Promise<TicketCount
         throw new Error('Invalid time range');
     }
 
+    const qToday = query(
+      ticketsRef,
+      where('createdAt', '>=', startDate),
+    );
+
     const q = query(
       ticketsRef,
       where('createdAt', '>=', startDate),
       where('createdAt', '<=', currentDate)
     );
 
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(timeRange === 'TODAY' ? qToday: q);
 
+    console.log(querySnapshot.docs);
     const ticketCount: TicketCount = {
       totalTickets: querySnapshot.size,
       scannedTickets: querySnapshot.docs.filter((doc) => doc.data().isAlreadyScan).length,

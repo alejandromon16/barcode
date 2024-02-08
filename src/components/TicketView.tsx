@@ -2,6 +2,7 @@ import React, { ForwardedRef } from "react";
 import { View } from "react-native";
 import { Box, VStack, HStack, Text, Image } from "@gluestack-ui/themed";
 import QRCode from "react-native-qrcode-svg";
+import ViewShot from 'react-native-view-shot';
 
 interface TicketViewProps {
   refProp: ForwardedRef<View>;
@@ -22,7 +23,7 @@ const formatDate = (date: Date): string => {
 
 const TicketView: React.FC<TicketViewProps> = ({ refProp, qrValue }) => {
   return (
-    <View
+    <ViewShot
       ref={refProp}
       style={{
         position: "absolute",
@@ -62,7 +63,7 @@ const TicketView: React.FC<TicketViewProps> = ({ refProp, qrValue }) => {
               </VStack>
             </Box>
           </Box>
-    </View>
+    </ViewShot>
   );
 };
 

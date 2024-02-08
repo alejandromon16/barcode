@@ -112,13 +112,15 @@ const processTicketData = (ticketData: TicketDataI[], timeRange: TimeRange): { s
   // Iterate through grouped data and populate salesData
   for (const key in groupedData) {
     if (groupedData.hasOwnProperty(key)) {
+      const currentDate = new Date();
       const tickets = groupedData[key];
       const totalCount = tickets.length > 0 ? tickets.length : 0;
-      const createdAt = tickets.length > 0 ? tickets[0].createdAt : timeRange=='TODAY' ? Timestamp.fromDate(new Date()) : Timestamp.fromDate(new Date(key.toString())); 
+      const createdAt = tickets.length > 0 ? tickets[0].createdAt : timeRange=='TODAY' ? Timestamp.fromDate(new Date(currentDate.getTime() + parseInt(key) * 1000)) : Timestamp.fromDate(new Date(key.toString())); 
 
+      const xTemp: number = timeRange === 'TODAY' ? parseInt(key) : createdAt.toMillis();
       salesData.push({
         y: totalCount,
-        x: createdAt.toMillis(),
+        x: xTemp,
         extraData: {
           formattedValue: `${totalCount} tickets`,
           formattedAmountPeople: `${totalCount}`, // Assuming 1 ticket per entry
@@ -129,7 +131,26 @@ const processTicketData = (ticketData: TicketDataI[], timeRange: TimeRange): { s
     }
   }
 
-  salesData.sort((a, b) => a.x - b.x);
+  if(timeRange === 'TODAY'){
+    salesData.sort((a, b) => {
+      const timeA = a.extraData.formattedTime;
+      const timeB = b.extraData.formattedTime;
+      
+      // Split the time strings into hours and minutes
+      const [hoursA, minutesA] = timeA.split(':').map(Number);
+      const [hoursB, minutesB] = timeB.split(':').map(Number);
+    
+      // Compare hours
+      if (hoursA !== hoursB) {
+        return hoursA - hoursB;
+      }
+      
+      // If hours are equal, compare minutes
+      return minutesA - minutesB;
+    });    
+  }else{
+    salesData.sort((a, b) => a.x - b.x);
+  }
   const totalAmount = Object.values(groupedData).reduce((total, tickets) => total + tickets.length, 0);
   return { salesData, totalAmount };
 };

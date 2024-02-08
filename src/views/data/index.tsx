@@ -104,6 +104,7 @@ const index = () => {
         setVerificadosCount(ticketCounts.scannedTickets);
 
         const { salesData, totalAmount } = await getSalesData(timeRange);
+        console.log('sales', salesData);
         setSalesData(salesData);
         setAmountOfSales(ticketCounts.totalTickets * 3);
 

@@ -54,7 +54,7 @@ export const LineGraph = ({
                   showVerticalLine: true,
                 },
                 lineColor: colorGreen,
-                curve: "cardinal",
+                curve: "monotone",
                 endPointConfig: {
                   color: colorGreen,
                   radius: 5,
