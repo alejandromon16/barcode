@@ -17,6 +17,11 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "alejandromonteroart1551@gmail.com",
+        "ascAppId": "6477518671"
+      }
+    }
   }
 }
