@@ -13,34 +13,6 @@ import useAuthStore from "@/stores/auth.store";
 import useUserStore from "@/stores/user.store";
 import { ScrollView, RefreshControl } from "react-native";
 
-const StackScreenConfig = () => {
-  return (
-    <Stack.Screen
-      options={{
-        headerShown: true,
-        title: "Operarios",
-        headerRight: () => (
-          <Button
-            onPress={() => {
-              router.push({
-                pathname: "/add",
-                params: {
-                  fullName: "Alejandro Montero",
-                  phoneNumber: "75002909",
-                },
-              });
-            }}
-            marginRight="$6"
-            variant="link"
-          >
-            <ButtonText>Agregar</ButtonText>
-          </Button>
-        ),
-      }}
-    />
-  );
-};
-
 const Employees = () => {
   const userStore = useUserStore();
   const [employeesData, setEmployeesData] = useState<UserDataI[] | null>(null);
@@ -100,7 +72,6 @@ const Employees = () => {
       }
     >
       <View backgroundColor={"$white"}>
-        <StackScreenConfig />
 
         {employeesData ? (
           <EmployeesView employees={employeesData} onPress={handleEmployeeClick} />

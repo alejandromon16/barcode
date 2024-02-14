@@ -20,7 +20,7 @@ const StackScanScreenConfig = () => {
     <Stack.Screen
       options={{
         headerShown: true,
-        title: "Datos",
+        title: "Escaner",
       }}
     />
   );

@@ -10,7 +10,7 @@ import useAuthStore from "@/stores/auth.store";
 import { Platform } from "react-native";
 
 export default function AppLayout() {
-  const isAdmin = useAuthStore((state) => state.isAdmin)
+  const isAdmin = useAuthStore((state) => state.isAdmin);
 
   const [activeTab, setActiveTab] = useState<TabsType>("INDEX");
   const authStore = useAuthStore();
@@ -27,99 +27,91 @@ export default function AppLayout() {
         tabBarStyle: {
           position: "absolute",
           bottom: 0,
-          height: Platform.OS === 'android' ? 70: 100,
+          height: Platform.OS === "android" ? 70 : 100,
           width: "auto",
         },
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="options"
         options={{
-          tabBarInactiveTintColor: '#C7C5C5',
-          tabBarActiveTintColor: '#15BE5A',
-          tabBarLabel: isAdmin ? 'Datos' : 'Escaner',
+          tabBarInactiveTintColor: "#C7C5C5",
+          tabBarActiveTintColor: "#15BE5A",
+          tabBarLabel: isAdmin ? "Operarios" : "Tickets",
           tabBarLabelStyle: {
             paddingBottom: 5,
           },
           tabBarIcon: (props) => {
             if (isAdmin) {
-              return <MaterialCommunityIcons
-                name="monitor-eye"
-                size={22}
-                color={props.focused ? "#15BE5A" : "gray"}
-              />;
+              return (
+                <MaterialCommunityIcons
+                  name="monitor-eye"
+                  size={22}
+                  color={props.focused ? "#15BE5A" : "gray"}
+                />
+              );
             } else {
-              return <MaterialCommunityIcons
-                name="qrcode-scan"
-                size={20}
-                color={props.focused ? "#15BE5A" : "gray"} />;
+              return (
+                <MaterialCommunityIcons
+                  name="qrcode-scan"
+                  size={20}
+                  color={props.focused ? "#15BE5A" : "gray"}
+                />
+              );
             }
-          }
+          },
         }}
       />
 
       <Tabs.Screen
-        name="employees"
+        name="index"
         options={{
-          tabBarInactiveTintColor: '#C7C5C5',
-          tabBarActiveTintColor: '#15BE5A',
-          tabBarLabel: 'Operarios',
+          tabBarInactiveTintColor: "#C7C5C5",
+          tabBarActiveTintColor: "#15BE5A",
+          tabBarLabel: isAdmin ? "Datos" : "Escaner",
           tabBarLabelStyle: {
             paddingBottom: 5,
           },
           tabBarIcon: (props) => {
-            return isAdmin ? (<FontAwesome6
-              name="people-group"
-              size={20}
-              color={props.focused ? "#15BE5A" : "gray"}
-            />
-            ): null;
-          },
-          tabBarButton: isAdmin ? undefined : () => { return null; }
-        }}
-      />
-
-      <Tabs.Screen
-        name="tickets"
-        options={{
-          tabBarInactiveTintColor: '#C7C5C5',
-          tabBarActiveTintColor: '#15BE5A',
-          tabBarLabel: 'Tickets',
-          tabBarLabelStyle: {
-            paddingBottom: 5,
-          },
-          tabBarIcon: (props) => {
-            return !isAdmin ? (
-              <Fontisto
+            if (isAdmin) {
+              return (
+                <FontAwesome6
+                name="people-group"
+                size={20}
+                color={props.focused ? "#15BE5A" : "gray"}
+              />
+              );
+            } else {
+              return (
+                <Fontisto
                 name="print"
                 size={20}
                 color={props.focused ? "#15BE5A" : "gray"}
               />
-            ) : null;
+              );
+            }
           },
-          tabBarButton: !isAdmin ? undefined : () => { return null; }
         }}
       />
-
-
-
 
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarInactiveTintColor: '#C7C5C5',
-          tabBarActiveTintColor: '#15BE5A',
-          tabBarLabel: 'Perfil',
+          tabBarInactiveTintColor: "#C7C5C5",
+          tabBarActiveTintColor: "#15BE5A",
+          tabBarLabel: "Perfil",
           tabBarLabelStyle: {
             paddingBottom: 5,
           },
           tabBarIcon: (props) => {
-            return <FontAwesome5
-              name="user"
-              size={20}
-              color={props.focused ? "#15BE5A" : "gray"}
-            />
-          }
+            return (
+              <FontAwesome5
+                name="user"
+                size={20}
+                color={props.focused ? "#15BE5A" : "gray"}
+              />
+            );
+          },
         }}
       />
     </Tabs>

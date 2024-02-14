@@ -54,16 +54,7 @@ const schema = z.object({
   phoneNumber: z.string(),
 });
 
-const StackScreenConfig = () => {
-  return (
-    <Stack.Screen
-      options={{
-        headerShown: true,
-        title: "Tickets",
-      }}
-    />
-  );
-};
+
 
 const tickets = () => {
   const { userId } = useAuthStore();
@@ -231,7 +222,6 @@ const tickets = () => {
         alignItems="center"
         height="$full"
       >
-        <StackScreenConfig />
         <TicketView refProp={viewShotRef} qrValue={qrValueString} />
 
         <MotiView
@@ -365,79 +355,3 @@ const styles = StyleSheet.create({
 });
 
 export default tickets;
-
-// import React, { useRef } from 'react';
-// import { View, Text, TouchableOpacity, Alert, Platform } from 'react-native';
-// import * as MediaLibrary from 'expo-media-library';
-// import QRCode from 'react-native-qrcode-svg';
-// import ViewShot from 'react-native-view-shot';
-
-// export default function App() {
-//   const containerRef = useRef(null);
-
-//   const handleSaveToLibrary = async () => {
-//     if (Platform.OS !== 'android') {
-//       Alert.alert('Unsupported platform', 'Saving to media library is only supported on Android.');
-//       return;
-//     }
-
-//     const permissions = await MediaLibrary.getPermissionsAsync();
-//     if (permissions.status !== 'granted') {
-//       const permissionRequest = await MediaLibrary.requestPermissionsAsync();
-//       if (permissionRequest.status !== 'granted') {
-//         Alert.alert('Permission required', 'Please grant permission to access media library.');
-//         return;
-//       }
-//     }
-
-//     try {
-//       const uri = await captureAndSave();
-//       Alert.alert('Success', 'Container saved to media library successfully.');
-//       console.log('Saved URI:', uri);
-//     } catch (error) {
-//       Alert.alert('Error', 'Failed to save container to media library.');
-//       console.error(error);
-//     }
-//   };
-
-//   const captureAndSave = async () => {
-//     return new Promise((resolve, reject) => {
-//       containerRef.current.capture().then(async (uri) => {
-//         try {
-//           const asset = await MediaLibrary.createAssetAsync(uri);
-//           resolve(asset.uri);
-//         } catch (error) {
-//           reject(error);
-//         }
-//       }).catch((error) => reject(error));
-//     });
-//   };
-
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <TouchableOpacity onPress={handleSaveToLibrary}>
-//         <ViewShot ref={containerRef} options={{ format: 'jpg', quality: 1 }}>
-//           <View
-//             style={{
-//               display: 'flex',
-//               backgroundColor: 'black',
-//               height: 200,
-//               width: 'auto'
-//             }}
-//           >
-//             <Text
-//               style={{
-//                 paddingVertical: 20,
-//                 color:'white'
-//               }}
-//             >Your Title</Text>
-//             <QRCode
-//               value="Your QR code data"
-//               size={200}
-//             />
-//           </View>
-//         </ViewShot>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// }

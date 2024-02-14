@@ -2,7 +2,7 @@
   "expo": {
     "name": "barcode",
     "slug": "barcode",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "scheme": "barcode",
     "icon": "./src/assets/images/icon.png",
@@ -18,7 +18,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.alm1.barcode"
+      "bundleIdentifier": "com.alm1.barcode",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "This app uses the camera to scan barcodes on tickets verifications"
+      },
+      "buildNumber": "4"
     },
     "android": {
       "adaptiveIcon": {
@@ -47,16 +51,6 @@
         "expo-camera",
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
-        }
-      ],[
-        "expo-barcode-scanner"
-      ],
-      [
-        "expo-media-library",
-        {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
-          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
-          "isAccessMediaLocationEnabled": true
         }
       ]
     ],
