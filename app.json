@@ -22,7 +22,7 @@
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This app uses the camera to scan barcodes on tickets verifications"
       },
-      "buildNumber": "4"
+      "buildNumber": "5"
     },
     "android": {
       "adaptiveIcon": {
@@ -52,6 +52,9 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
         }
+      ],
+      [
+        "expo-barcode-scanner"
       ]
     ],
     "extra": {

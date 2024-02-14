@@ -26,7 +26,7 @@ export default function App() {
   const { userId } = useAuthStore();
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
-  const [qrValue, setQrValue] = useState<string | null>(null);
+  const [qrValue, setQrValue] = useState<string>("12345");
   const [ticketStatus, setTicketStatus] = useState<TicketStatus>("PROCESSING")
   const [scanning, setScanning] = useState<boolean>(false);
   const animation = useRef(null);
@@ -117,7 +117,7 @@ export default function App() {
         style={styles.camera}
         type={type}
         onBarCodeScanned={handleScannedCode}
-        focusDepth={0.2}
+        focusDepth={1}
       >
         <MotiView
           style={{
@@ -157,7 +157,7 @@ export default function App() {
                   alignSelf='flex-end'
                 >
                   <Button
-                    size='$2xl'
+                    size='$xl'
                     variant='outline'
                     borderColor='$white'
                     onPress={() => setScanning(false)}

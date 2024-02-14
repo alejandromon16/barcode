@@ -33,7 +33,7 @@ export default function AppLayout() {
       }}
     >
       <Tabs.Screen
-        name="options"
+        name="index"
         options={{
           tabBarInactiveTintColor: "#C7C5C5",
           tabBarActiveTintColor: "#15BE5A",
@@ -64,7 +64,7 @@ export default function AppLayout() {
       />
 
       <Tabs.Screen
-        name="index"
+        name="options"
         options={{
           tabBarInactiveTintColor: "#C7C5C5",
           tabBarActiveTintColor: "#15BE5A",
